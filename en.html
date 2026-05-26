@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CideLankideak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">Cide <span>Lankideak</span></a>
+    <img src="https://www.lab.eus/wp-content/uploads/2023/10/LogoaKabezera-02-02.jpg"
+         alt="LAB Sindikatua"
+         style="height:36px;width:auto;display:block;">
+
+    <ul class="nav-center">
+      <li><a href="#about">About us</a></li>
+      <li><a href="#suggestions">Suggestions</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="lang-switcher">
+      <button class="lang-btn" aria-label="Select language">
+        <svg viewBox="0 0 24 24" stroke-width="1.4">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+        </svg>
+        EN
+      </button>
+      <div class="lang-dropdown">
+        <a href="index.html"><span class="flag">🇪🇸</span> ES</a>
+        <a href="eu.html"><span class="flag"><svg width="16" height="11" viewBox="0 0 16 11" style="vertical-align:middle;border-radius:1px"><rect width="16" height="11" fill="#D0021B"/><line x1="0" y1="0" x2="16" y2="11" stroke="#009A44" stroke-width="3"/><line x1="16" y1="0" x2="0" y2="11" stroke="#009A44" stroke-width="3"/><rect x="0" y="4" width="16" height="3" fill="white"/><rect x="6.5" y="0" width="3" height="11" fill="white"/></svg></span> EU</a>
+        <a href="en.html" class="active"><span class="flag">🇬🇧</span> EN</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BANNER -->
+  <section class="banner" id="home">
+    <div class="slide active" style="background-image: url('https://cdn.elperiodicodelaenergia.com/2025/08/68b175785132eb3611412f93.jpg')"></div>
+    <div class="slide" style="background-image: url('https://parke.eus/wp-content/uploads/2024/06/cidetec_imagen.jpg')"></div>
+    <div class="slide" style="background-image: url('https://www.industriaquimica.es/media/uploads/noticias/cidetec1.jpg')"></div>
+
+    <div class="banner-content">
+      <p class="banner-eyebrow">Welcome</p>
+      <h1 class="banner-title">Together we build<br><em>a better Cidetec</em></h1>
+      <p class="banner-subtitle">A space for meeting, collaboration and shared improvement</p>
+    </div>
+
+    <button class="arrow arrow-left" aria-label="Previous" onclick="changeSlide(-1)">
+      <svg viewBox="0 0 16 16" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+    </button>
+    <button class="arrow arrow-right" aria-label="Next" onclick="changeSlide(1)">
+      <svg viewBox="0 0 16 16" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+    </button>
+    <div class="slider-dots" id="dots"></div>
+  </section>
+
+  <!-- DESCRIPTION -->
+  <section class="section-description" id="about">
+    <span class="section-tag">Who we are</span>
+    <h2 class="description-title reveal">A candidacy built<br>on shared values</h2>
+    <p class="description-text reveal" contenteditable="true" spellcheck="true" title="Click to edit this text">
+      We are a diverse group of CIDETEC workers who, driven by concerns about certain workplace situations, have decided to step forward and push for the creation of a works council — a process we are currently undergoing.
+    </p>
+    <p class="description-text reveal" contenteditable="true" spellcheck="true" title="Click to edit this text">
+      Getting the process of creating a works council off the ground has not been easy. That is why having achieved it represents an important milestone that everyone should be aware of.
+    </p>
+    <p class="description-text reveal" contenteditable="true" spellcheck="true" title="Click to edit this text">
+      The works council is the body that represents all workers. It is made up of colleagues democratically elected by the workforce, and its main role is to defend collective interests and serve as a link with management. In an organisation like CIDETEC, its role will be key, acting as the voice of the entire workforce on issues that affect our day-to-day working lives.
+    </p>
+  </section>
+
+  <!-- PARTICIPANTS -->
+  <section class="section-participants reveal">
+    <div class="inner">
+      <div class="participants-header">
+        <span class="section-tag">Our team</span>
+        <h2 class="description-title">The people who make<br>this candidacy possible</h2>
+        <div class="dept-legend">
+          <span class="dept-badge"><span class="dept-badge-dot energia"></span>Energy</span>
+          <span class="dept-badge"><span class="dept-badge-dot ids"></span>IdS</span>
+        </div>
+      </div>
+      <div class="participants-grid">
+
+        <div class="participant-card">
+          <div class="avatar ids">
+            <span class="avatar-initials">SR</span>
+          </div>
+          <span class="participant-name">Sandra Rodríguez Salvador</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Sandra Rodríguez Salvador</p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>IdS, USFS</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span class="tooltip-accent">Lab Technician</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>Seniority: 15 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">AN</span>
+          </div>
+          <span class="participant-name">Amaia Narbarte</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Amaia Narbarte</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 4.5 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">IM</span>
+          </div>
+          <span class="participant-name">Iratxe Meatza</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Iratxe Meatza</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Team Leader</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 22 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">VG</span>
+          </div>
+          <span class="participant-name">Vanesa González Saldibar</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Vanesa González Saldibar</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Lab Technician</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 1 year</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">FS</span>
+          </div>
+          <span class="participant-name">Federica Santino</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Federica Santino</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 1 year</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">DS</span>
+          </div>
+          <span class="participant-name">Denis Sánchez Argoitia</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Denis Sánchez Argoitia</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, USA</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Team Leader</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 5+3 years</span></p>
+          </div>
+        </div>
+		
+		<div class="participant-card">
+          <div class="avatar ids">
+            <span class="avatar-initials">AM</span>
+          </div>
+          <span class="participant-name">Ana Martiarena Iriarte</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Ana Martiarena Iriarte</p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>IdS, UCTS</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span class="tooltip-accent">Lab Technician</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>Seniority: 4,5 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">JM</span>
+          </div>
+          <span class="participant-name">Josu Manterola Matellanes</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Josu Manterola Matellanes</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energía, USA</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 3,5 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">EI</span>
+          </div>
+          <span class="participant-name">Elena Iruin</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Elena Iruin</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energía, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 5+1 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">MC</span>
+          </div>
+          <span class="participant-name">Marta Cazorla Soult</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Marta Cazorla Soult</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 1.5 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">AA</span>
+          </div>
+          <span class="participant-name">Aitor Arbonies Goitia</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Aitor Arbonies Goitia</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 1.5 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">IF</span>
+          </div>
+          <span class="participant-name">Irene Flores Sánchez</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Irene Flores Sánchez</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Lab Technician</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 6 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">IL</span>
+          </div>
+          <span class="participant-name">Imanol Landa Medrano</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Imanol Landa Medrano</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Senior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 7 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">SS</span>
+          </div>
+          <span class="participant-name">Susan Sananes</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Susan Sananes</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Junior Researcher</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 7.5 years</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">AE</span>
+          </div>
+          <span class="participant-name">Aitor Eguia</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Aitor Eguia</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energy, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Team Leader</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Seniority: 9 years</span></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PILLARS -->
+  <section class="section-pillars">
+    <div class="pillars-grid">
+      <div class="pillar reveal">
+        <div class="pillar-number">01</div>
+        <p class="pillar-title">Listening</p>
+        <p class="pillar-text">Listening to the concerns, doubts and proposals of all CIDETEC workers.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.15s">
+        <div class="pillar-number">02</div>
+        <p class="pillar-title">Transparency</p>
+        <p class="pillar-text">Being informed about and informing on relevant decisions that may affect employment or working conditions (organisational changes, hirings, dismissals, etc.).</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">03</div>
+        <p class="pillar-title">Impact</p>
+        <p class="pillar-text">Ensuring compliance with labour rights and current legislation (contracts, working hours, safety, equality, holidays, etc.), and improving current working conditions.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">04</div>
+        <p class="pillar-title">Occupational Safety and Health</p>
+        <p class="pillar-text">Ensuring compliance with occupational health and safety regulations so that all CIDETEC workers are better protected in their workplaces and against any risk.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">05</div>
+        <p class="pillar-title">Heterogeneity</p>
+        <p class="pillar-text">Ensuring equal representation of all CIDETEC workers. This candidacy, led and driven by LAB, is made up of a combination of independent individuals and people affiliated with different unions; likewise, the list has been designed with the aim of equalising representation across job positions.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">06</div>
+        <p class="pillar-title">Participation</p>
+        <p class="pillar-text">Taking part in dialogue with management to help improve the working environment, as well as creating various forums that allow us to work more effectively and better defend our collective interests.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="section-form" id="suggestions">
+    <div class="form-header reveal">
+      <span class="section-tag">Your voice matters</span>
+      <h2 class="form-title">Share your suggestions</h2>
+      <p class="form-subtitle">Every idea counts. Tell us what we can improve or what you would like to see in our candidacy.</p>
+    </div>
+
+    <form id="suggestionForm" action="https://formspree.io/f/mjgpzrry" method="POST" class="reveal">
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="you@email.com" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="message">Your suggestion</label>
+        <textarea class="form-textarea" id="message" name="message" placeholder="Share your idea..." required></textarea>
+      </div>
+      <input type="text" name="_gotcha" style="display:none"/>
+      <button type="submit" class="btn-submit">
+        Send suggestion
+        <svg viewBox="0 0 16 16" stroke-width="1.5"><path d="M2 8h12M9 4l5 4-5 4"/></svg>
+      </button>
+    </form>
+
+    <div class="form-success" id="formSuccess">
+      <div class="form-success-icon">✦</div>
+      <h3>Thank you for your suggestion</h3>
+      <p>We have received it successfully. Your input helps us grow and improve together.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <span class="footer-logo">Cide <span>Lankideak</span></span>
+    <img src="https://www.lab.eus/wp-content/uploads/2025/01/labTxuri-01.png"
+         alt="LAB Sindikatua"
+         style="height:32px;width:auto;display:block;filter:brightness(0) invert(1);opacity:0.75;">
+    <span class="footer-copy">© 2026 · All rights reserved</span>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

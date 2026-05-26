@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CideLankideak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">Cide <span>Lankideak</span></a>
+    <img src="https://www.lab.eus/wp-content/uploads/2023/10/LogoaKabezera-02-02.jpg"
+         alt="LAB Sindikatua"
+         style="height:36px;width:auto;display:block;">
+
+    <ul class="nav-center">
+      <li><a href="#guraez">Nor gara</a></li>
+      <li><a href="#iradokizunak">Iradokizunak</a></li>
+      <li><a href="#kontaktua">Kontaktua</a></li>
+    </ul>
+
+    <div class="lang-switcher">
+      <button class="lang-btn" aria-label="Hizkuntza aukeratu">
+        <svg viewBox="0 0 24 24" stroke-width="1.4">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+        </svg>
+        EU
+      </button>
+      <div class="lang-dropdown">
+        <a href="index.html"><span class="flag">🇪🇸</span> ES</a>
+        <a href="eu.html" class="active"><span class="flag"><svg width="16" height="11" viewBox="0 0 16 11" style="vertical-align:middle;border-radius:1px"><rect width="16" height="11" fill="#D0021B"/><line x1="0" y1="0" x2="16" y2="11" stroke="#009A44" stroke-width="3"/><line x1="16" y1="0" x2="0" y2="11" stroke="#009A44" stroke-width="3"/><rect x="0" y="4" width="16" height="3" fill="white"/><rect x="6.5" y="0" width="3" height="11" fill="white"/></svg></span> EU</a>
+        <a href="en.html"><span class="flag">🇬🇧</span> EN</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BANNER -->
+  <section class="banner" id="hasiera">
+    <div class="slide active" style="background-image: url('https://cdn.elperiodicodelaenergia.com/2025/08/68b175785132eb3611412f93.jpg')"></div>
+    <div class="slide" style="background-image: url('https://parke.eus/wp-content/uploads/2024/06/cidetec_imagen.jpg')"></div>
+    <div class="slide" style="background-image: url('https://www.industriaquimica.es/media/uploads/noticias/cidetec1.jpg')"></div>
+
+    <div class="banner-content">
+      <p class="banner-eyebrow">Ongi etorri</p>
+      <h1 class="banner-title">Denon laguntzarekin<br><em>Cidetec hobetuz</em></h1>
+      <p class="banner-subtitle">Ideiak elkarbanatzeko, lankidetzan aritzeko eta hobekuntza bilatzeko gune bat</p>
+    </div>
+
+    <button class="arrow arrow-left" aria-label="Aurrekoa" onclick="changeSlide(-1)">
+      <svg viewBox="0 0 16 16" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
+    </button>
+    <button class="arrow arrow-right" aria-label="Hurrengoa" onclick="changeSlide(1)">
+      <svg viewBox="0 0 16 16" stroke-width="1.5"><path d="M6 3l5 5-5 5"/></svg>
+    </button>
+    <div class="slider-dots" id="dots"></div>
+  </section>
+
+  <!-- DESKRIBAPENA -->
+  <section class="section-description" id="guraez">
+    <span class="section-tag">Nortzuk gara</span>
+    <h2 class="description-title reveal">Balio partekatuekin<br>eraikitako hautagaitza</h2>
+    <p class="description-text reveal" contenteditable="true" spellcheck="true" title="Egin klik testua editatzeko">
+      CIDETECeko langile talde anitz bat gara, zenbait lan-egoeren aurrean sortutako kezkek eraginda aurrera pausoa ematea erabaki duena. Horretarako, enpresa-batzorde bat sortzeko prozesua bultzatzea erabaki da eta prozesu horretan gabiltza orain.
+    </p>
+    <p class="description-text reveal" contenteditable="true" spellcheck="true" title="Egin klik testua editatzeko">
+      Enpresa-batzorde bat sortzeko prozesua martxan jartzea ez da erraza izan. Hori dela eta, kontuan izan behar da hau lortu izana egindako lanaren fruitu garrantzitsua dela.
+    </p>
+    <p class="description-text reveal" contenteditable="true" spellcheck="true" title="Egin klik testua editatzeko">
+      Enpresa-batzordea langile guztiak ordezkatzen dituen organoa da. Langileek demokratikoki hautatutako lankideek osatzen dute, eta haien eginkizun nagusia interes kolektiboak defendatzea eta zuzendaritzarekin lotura-bidea izatea da. CIDETECen bezalako erakunde batean, funtsezko eginkizuna beteko du, gure egunerokotasunean eragiten duten gaietan langile guztien bozeramaile gisa jardunez.
+    </p>
+  </section>
+
+  <!-- PARTE-HARTZAILEAK -->
+  <section class="section-participants reveal">
+    <div class="inner">
+      <div class="participants-header">
+        <span class="section-tag">Gure taldea</span>
+        <h2 class="description-title">Hautagaitza hau posible egiten<br>duten pertsonak</h2>
+        <div class="dept-legend">
+          <span class="dept-badge"><span class="dept-badge-dot energia"></span>Energia</span>
+          <span class="dept-badge"><span class="dept-badge-dot ids"></span>IdS</span>
+        </div>
+      </div>
+      <div class="participants-grid">
+
+        <div class="participant-card">
+          <div class="avatar ids">
+            <span class="avatar-initials">SR</span>
+          </div>
+          <span class="participant-name">Sandra Rodríguez Salvador</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Sandra Rodríguez Salvador</p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>IdS, USFS</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span class="tooltip-accent">Laborategiko Teknikaria</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>Antzinatasuna: 15 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">AN</span>
+          </div>
+          <span class="participant-name">Amaia Narbarte</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Amaia Narbarte</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 4,5 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">IM</span>
+          </div>
+          <span class="participant-name">Iratxe Meatza</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Iratxe Meatza</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Talde Burua</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 22 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">VG</span>
+          </div>
+          <span class="participant-name">Vanesa González Saldibar</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Vanesa González Saldibar</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Laborategiko Teknikaria</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 1 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">FS</span>
+          </div>
+          <span class="participant-name">Federica Santino</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Federica Santino</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 1 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">DS</span>
+          </div>
+          <span class="participant-name">Denis Sánchez Argoitia</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Denis Sánchez Argoitia</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, USA</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Talde Burua</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 5+3 urte</span></p>
+          </div>
+        </div>
+		
+		<div class="participant-card">
+          <div class="avatar ids">
+            <span class="avatar-initials">AM</span>
+          </div>
+          <span class="participant-name">Ana Martiarena Iriarte</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Ana Martiarena Iriarte</p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>IdS, UCTS</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span class="tooltip-accent">Laborategiko Teknikaria</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot ids"></span><span>Antzinatasuna: 4,5 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">JM</span>
+          </div>
+          <span class="participant-name">Josu Manterola Matellanes</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Josu Manterola Matellanes</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energía, USA</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 3,5 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">EI</span>
+          </div>
+          <span class="participant-name">Elena Iruin</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Elena Iruin</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energía, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 5+1 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">MC</span>
+          </div>
+          <span class="participant-name">Marta Cazorla Soult</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Marta Cazorla Soult</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 1,5 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">AA</span>
+          </div>
+          <span class="participant-name">Aitor Arbonies Goitia</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Aitor Arbonies Goitia</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 1,5 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">IF</span>
+          </div>
+          <span class="participant-name">Irene Flores Sánchez</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Irene Flores Sánchez</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Laborategiko Teknikaria</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 6 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">IL</span>
+          </div>
+          <span class="participant-name">Imanol Landa Medrano</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Imanol Landa Medrano</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Seniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 7 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">SS</span>
+          </div>
+          <span class="participant-name">Susan Sananes</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Susan Sananes</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Ikerlari Juniorra</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 7,5 urte</span></p>
+          </div>
+        </div>
+
+        <div class="participant-card">
+          <div class="avatar energia">
+            <span class="avatar-initials">AE</span>
+          </div>
+          <span class="participant-name">Aitor Eguia</span>
+          <div class="participant-tooltip">
+            <p class="tooltip-name">Aitor Eguia</p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Energia, UME</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span class="tooltip-accent">Talde Burua</span></p>
+            <p class="tooltip-row"><span class="tooltip-dot energia"></span><span>Antzinatasuna: 9 urte</span></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ZUTABEAK -->
+  <section class="section-pillars">
+    <div class="pillars-grid">
+      <div class="pillar reveal">
+        <div class="pillar-number">01</div>
+        <p class="pillar-title">Entzutea</p>
+        <p class="pillar-text">CIDETECeko langile guztien kezkak eta zalantzak entzun eta proposamena bateratuak egitea.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.15s">
+        <div class="pillar-number">02</div>
+        <p class="pillar-title">Gardentasuna</p>
+        <p class="pillar-text">Enpleguan edo lan-baldintzetan (antolamendu-aldaketak, kontratazioak, kaleratzeak, etab.) eragina izan dezaketen erabaki garrantzitsuei buruzko informazioa jaso eta partekatzea.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">03</div>
+        <p class="pillar-title">Eragina</p>
+        <p class="pillar-text">Lan-eskubideak eta indarrean dagoen legedia betetzen direla zaindu (kontratuak, ordutegiak, segurtasuna, berdintasuna, oporrak, etab.), eta egungo lan-baldintzak hobetzea.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">04</div>
+        <p class="pillar-title">Laneko Segurtasuna eta Osasuna</p>
+        <p class="pillar-text">Lan prebentzioaren arloko arauak betetzen direla zaintzea, CIDETECeko langile guztiak beren lanpostuetan babes handiagoa eduki dezaten eta ahalik eta arrisku gutxien izan dezaten.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">05</div>
+        <p class="pillar-title">Aniztasuna</p>
+        <p class="pillar-text">CIDETECeko langile guztien ordezkaritza bermatzea. Hautagaitza hau, LABek eratua eta bultzatua den arren, pertsona independenteen eta sindikatu desberdinetako afiliatuen konbinazio batek osatzen du; era berean, zerrenda lanpostu arteko ordezkaritza orekatu baten bidez diseinatu da.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:0.3s">
+        <div class="pillar-number">06</div>
+        <p class="pillar-title">Parte-hartzea</p>
+        <p class="pillar-text">Zuzendaritzarekin elkarrizketetan parte hartzea; lan-harremanak hobetzen laguntzeko, eraginkortasun handiagoz lan eginez, interes kolektiboak hobeto defendatzea ahalbidetuko duten foroak sortzea.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULARIOA -->
+  <section class="section-form" id="iradokizunak">
+    <div class="form-header reveal">
+      <span class="section-tag">Zure ahotsa garrantzitsua da</span>
+      <h2 class="form-title">Partekatu zure iradokizunak</h2>
+      <p class="form-subtitle">Ideia bakoitzak balio du. Esaguzu zer hobetu dezakegun edo zer ikusi nahi zenukeen gure hautagaitzan.</p>
+    </div>
+
+    <form id="suggestionForm" action="https://formspree.io/f/mjgpzrry" method="POST" class="reveal">
+      <div class="form-group">
+        <label class="form-label" for="email">Helbide elektronikoa</label>
+        <input class="form-input" type="email" id="email" name="email" placeholder="zure@helbidea.eus" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="message">Zure iradokizuna</label>
+        <textarea class="form-textarea" id="message" name="message" placeholder="Kontaiguzu zure ideia..." required></textarea>
+      </div>
+      <input type="text" name="_gotcha" style="display:none"/>
+      <button type="submit" class="btn-submit">
+        Bidali iradokizuna
+        <svg viewBox="0 0 16 16" stroke-width="1.5"><path d="M2 8h12M9 4l5 4-5 4"/></svg>
+      </button>
+    </form>
+
+    <div class="form-success" id="formSuccess">
+      <div class="form-success-icon">✦</div>
+      <h3>Eskerrik asko zure iradokizunagatik</h3>
+      <p>Jaso dugu! Zure iritzia lagungarria da guretzat hazten eta hobetzen jarraitzeko.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="kontaktua">
+    <span class="footer-logo">Cide <span>Lankideak</span></span>
+    <img src="https://www.lab.eus/wp-content/uploads/2025/01/labTxuri-01.png"
+         alt="LAB Sindikatua"
+         style="height:32px;width:auto;display:block;filter:brightness(0) invert(1);opacity:0.75;">
+    <span class="footer-copy">© 2026 · Eskubide guztiak erreserbaturik</span>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
