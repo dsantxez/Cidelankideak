@@ -31,6 +31,7 @@ create table public.board_cards (
   position   int  not null default 0,
   category   text not null default 'general',
   assignee   text,
+  is_public  boolean not null default true,
   date       date,
   title_es   text, title_eu text, title_en text,
   desc_es    text, desc_eu text, desc_en text,
@@ -59,7 +60,30 @@ add the `board_cards` table (optional but makes the board refresh automatically)
 > ```sql
 > alter table public.board_cards add column if not exists assignee text;
 > alter table public.board_cards add column if not exists comments jsonb not null default '[]'::jsonb;
+> alter table public.board_cards add column if not exists is_public boolean not null default true;
 > ```
+
+### Making hidden cards *truly* private (recommended)
+
+By default, hidden cards are only hidden in the page — a tech-savvy visitor could
+still read them through the public API. To enforce it on the server so the public
+can **only** ever receive cards marked visible, replace the public-read policy:
+
+```sql
+drop policy if exists "public read" on public.board_cards;
+
+-- Visitors (not logged in) can read ONLY cards marked visible
+create policy "public read visible" on public.board_cards
+  for select to anon using (is_public = true);
+```
+
+Logged-in members still see everything (covered by the existing `auth write`
+policy). After this, a hidden card is invisible to the public even via the API.
+
+> Note: the internal **chat notes** and **assignee** live on each card row, so on a
+> *visible* card they are technically readable through the public API too, even
+> though the page only shows them to members. If you need those locked down as well,
+> tell me and I'll move them into a separate members-only table.
 
 ## 3. Create the single shared editor account
 

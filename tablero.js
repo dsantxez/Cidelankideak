@@ -74,6 +74,8 @@ const I18N = {
     close: 'Cerrar', send: 'Enviar',
     noComments: 'Aún no hay notas internas.',
     needNameText: 'Escribe tu nombre y el mensaje.',
+    visibleLabel: 'Visible para el público',
+    hiddenBadge: 'Oculto', showCard: 'Hacer visible', hideCard: 'Ocultar al público',
   },
   eu: {
     navHome: 'Hasiera', navBoard: 'Taula',
@@ -100,6 +102,8 @@ const I18N = {
     close: 'Itxi', send: 'Bidali',
     noComments: 'Oraindik ez dago barne oharrik.',
     needNameText: 'Idatzi zure izena eta mezua.',
+    visibleLabel: 'Publikoarentzat ikusgai',
+    hiddenBadge: 'Ezkutatua', showCard: 'Ikusgai egin', hideCard: 'Publikoari ezkutatu',
   },
   en: {
     navHome: 'Home', navBoard: 'Board',
@@ -126,6 +130,8 @@ const I18N = {
     close: 'Close', send: 'Send',
     noComments: 'No internal notes yet.',
     needNameText: 'Enter your name and message.',
+    visibleLabel: 'Visible to the public',
+    hiddenBadge: 'Hidden', showCard: 'Make visible', hideCard: 'Hide from public',
   },
 };
 
@@ -240,7 +246,7 @@ function render() {
 
   STAGES.forEach(stage => {
     const colCards = cards
-      .filter(c => c.stage === stage.key)
+      .filter(c => c.stage === stage.key && (editing || c.is_public !== false))
       .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
     const col = document.createElement('div');
@@ -272,10 +278,19 @@ function cardEl(c) {
   const title = c[`title_${lang}`] || c.title_es || '';
   const desc  = c[`desc_${lang}`]  || c.desc_es  || '';
   const ccount = (c.comments || []).length;
+  const hidden = c.is_public === false;
+  if (editing && hidden) el.classList.add('card-hidden');
   const assigneeChip = (editing && c.assignee)
     ? `<div class="card-assignee"><span class="assignee-ava">${esc(initials(c.assignee))}</span>${esc(c.assignee)}</div>`
     : '';
+  const hiddenBadge = (editing && hidden)
+    ? `<span class="card-hidden-badge"><svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/></svg>${esc(t('hiddenBadge'))}</span>`
+    : '';
+  const eyeSvg = hidden
+    ? `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/></svg>`
+    : `<svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
   el.innerHTML = `
+    ${hiddenBadge}
     <span class="card-cat ${cat.key}"><span class="card-cat-dot"></span>${esc(cat[lang])}</span>
     <div class="card-title">${esc(title)}</div>
     ${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}
@@ -283,12 +298,14 @@ function cardEl(c) {
     <div class="card-foot">
       <span class="card-date">${c.date ? formatDate(c.date) : ''}</span>
       <span class="card-actions">
+        <button title="${esc(hidden ? t('showCard') : t('hideCard'))}" data-vis>${eyeSvg}</button>
         <button title="Chat" data-chat><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/></svg>${ccount ? `<span class="chat-count">${ccount}</span>` : ''}</button>
         <button title="Edit" data-edit><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
       </span>
     </div>`;
   $('[data-edit]', el).addEventListener('click', (e) => { e.stopPropagation(); openCardModal(c.id); });
   $('[data-chat]', el).addEventListener('click', (e) => { e.stopPropagation(); openChat(c.id); });
+  $('[data-vis]', el).addEventListener('click', (e) => { e.stopPropagation(); toggleVisibility(c.id); });
   el.addEventListener('dblclick', () => { if (editing) openCardModal(c.id); });
   return el;
 }
@@ -394,7 +411,9 @@ function wireEditToggle() {
       editing = false;
       if (!DEMO) await supa.auth.signOut();
       document.body.classList.remove('editing');
-      updateEditToggle(); updateStatus(); render();
+      updateEditToggle(); updateStatus();
+      await loadCards();   // re-fetch as public so hidden cards leave memory
+      render();
     } else {
       openModal('#loginModal');
       $('#loginPassword').value = '';
@@ -421,11 +440,13 @@ async function doLogin() {
   onLoggedIn();
 }
 
-function onLoggedIn() {
+async function onLoggedIn() {
   editing = true;
   closeModal('#loginModal');
   document.body.classList.add('editing');
-  updateEditToggle(); updateStatus(); render();
+  updateEditToggle(); updateStatus();
+  await loadCards();   // re-fetch as an authenticated member so hidden cards are included
+  render();
 }
 
 function wireCardModal() {
@@ -459,6 +480,7 @@ function openCardModal(id, presetStage) {
   $('#fldCategory').value = c ? (c.category || 'general') : 'general';
   $('#fldStage').value    = c ? c.stage : (presetStage || STAGES[0].key);
   $('#fldAssignee').value = c ? (c.assignee || '') : '';
+  $('#fldPublic').checked = c ? (c.is_public !== false) : true;
   $('#fldDate').value     = c && c.date ? c.date : '';
   ['es','eu','en'].forEach(l => {
     $(`#title_${l}`).value = c ? (c[`title_${l}`] || '') : '';
@@ -477,6 +499,7 @@ async function saveCardFromModal() {
     category: $('#fldCategory').value,
     stage: $('#fldStage').value,
     assignee: $('#fldAssignee').value || null,
+    is_public: $('#fldPublic').checked,
     date: $('#fldDate').value || null,
     position: base ? base.position : nextPosition($('#fldStage').value),
     title_es: titleEs, title_eu: $('#title_eu').value.trim(), title_en: $('#title_en').value.trim(),
@@ -486,6 +509,19 @@ async function saveCardFromModal() {
   const ok = await persistCard(card, !editingId);
   if (!ok) { $('#cardError').textContent = t('saveError'); return; }
   closeModal('#cardModal');
+  render();
+}
+
+async function toggleVisibility(id) {
+  const c = cards.find(x => x.id === id);
+  if (!c) return;
+  const next = c.is_public === false;   // hidden -> visible, visible -> hidden
+  c.is_public = next;
+  if (DEMO) { saveDemo(); }
+  else {
+    const { error } = await supa.from('board_cards').update({ is_public: next }).eq('id', id);
+    if (error) { c.is_public = !next; alert(t('saveError')); return; }
+  }
   render();
 }
 
