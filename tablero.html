@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CideLankideak · Tablero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Barlow+Condensed:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="board-page">
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" id="navHome" href="index.html">Cide <span>Lankideak</span></a>
+    <img src="https://www.ela.eus/@@site-logo/logoa.png"
+         alt="ELA Sindikatua"
+         style="height:36px;width:auto;display:block;">
+    <img src="https://www.lab.eus/wp-content/uploads/2023/10/LogoaKabezera-02-02.jpg"
+         alt="LAB Sindikatua"
+         style="height:36px;width:auto;display:block;">
+
+    <ul class="nav-center">
+      <li><a id="navHomeLink" href="index.html" data-i18n="navHome">Inicio</a></li>
+      <li><a href="tablero.html" data-i18n="navBoard">Tablero</a></li>
+    </ul>
+
+    <!-- Language switcher (switches the board in place) -->
+    <div class="lang-switcher">
+      <button class="lang-btn" aria-label="Idioma">
+        <svg viewBox="0 0 24 24" stroke-width="1.4">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+        </svg>
+        <span id="langLabel">ES</span>
+      </button>
+      <div class="lang-dropdown">
+        <a href="#" data-lang="es"><span class="flag">🇪🇸</span> ES</a>
+        <a href="#" data-lang="eu"><span class="flag"><svg width="16" height="11" viewBox="0 0 16 11" style="vertical-align:middle;border-radius:1px"><rect width="16" height="11" fill="#D0021B"/><line x1="0" y1="0" x2="16" y2="11" stroke="#009A44" stroke-width="3"/><line x1="16" y1="0" x2="0" y2="11" stroke="#009A44" stroke-width="3"/><rect x="0" y="4" width="16" height="3" fill="white"/><rect x="6.5" y="0" width="3" height="11" fill="white"/></svg></span> EU</a>
+        <a href="#" data-lang="en"><span class="flag">🇬🇧</span> EN</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- INTRO -->
+  <section class="board-intro">
+    <span class="section-tag" data-i18n="boardTag">Estado de los temas</span>
+    <h1 data-i18n="boardTitle">Temas con la dirección</h1>
+    <p data-i18n="boardSubtitle">Sigue en qué punto se encuentra cada asunto que el comité está tratando con la empresa.</p>
+  </section>
+
+  <!-- TOOLBAR -->
+  <div class="board-toolbar">
+    <div class="cat-legend" id="catLegend"><!-- filled by JS --></div>
+    <div class="board-access">
+      <span class="board-status" id="boardStatus"></span>
+      <button class="btn-board ghost" id="editToggle">
+        <svg viewBox="0 0 24 24"><path d="M12 1a4 4 0 0 0-4 4v4H6a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10a1 1 0 0 0-1-1h-2V5a4 4 0 0 0-4-4z"/></svg>
+        <span data-i18n="login">Acceder</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- BOARD -->
+  <div class="board-scroll">
+    <div class="board" id="board"><!-- columns filled by JS --></div>
+  </div>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal modal-sm">
+      <h3 data-i18n="loginTitle">Acceso miembros</h3>
+      <label data-i18n="passwordLabel">Contraseña</label>
+      <input type="password" id="loginPassword" autocomplete="current-password" />
+      <div class="modal-error" id="loginError"></div>
+      <div class="modal-actions">
+        <button class="btn-board ghost" data-close data-i18n="cancel">Cancelar</button>
+        <button class="btn-board" id="loginSubmit" data-i18n="enter">Entrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD EDITOR MODAL -->
+  <div class="modal-overlay" id="cardModal">
+    <div class="modal">
+      <h3 id="cardModalTitle" data-i18n="newCard">Nuevo tema</h3>
+
+      <div class="modal-row">
+        <div>
+          <label data-i18n="category">Categoría</label>
+          <select id="fldCategory"></select>
+        </div>
+        <div>
+          <label data-i18n="date">Fecha</label>
+          <input type="date" id="fldDate" />
+        </div>
+      </div>
+
+      <label data-i18n="stage">Etapa</label>
+      <select id="fldStage"></select>
+
+      <label data-i18n="content">Contenido por idioma</label>
+      <div class="modal-lang-tabs">
+        <button type="button" data-tab="es" class="active">ES</button>
+        <button type="button" data-tab="eu">EU</button>
+        <button type="button" data-tab="en">EN</button>
+      </div>
+      <div class="modal-lang-pane active" data-pane="es">
+        <input type="text" id="title_es" data-i18n-ph="phTitle" placeholder="Título" />
+        <textarea id="desc_es" data-i18n-ph="phDesc" placeholder="Descripción breve"></textarea>
+      </div>
+      <div class="modal-lang-pane" data-pane="eu">
+        <input type="text" id="title_eu" data-i18n-ph="phTitle" placeholder="Título" />
+        <textarea id="desc_eu" data-i18n-ph="phDesc" placeholder="Descripción breve"></textarea>
+      </div>
+      <div class="modal-lang-pane" data-pane="en">
+        <input type="text" id="title_en" data-i18n-ph="phTitle" placeholder="Título" />
+        <textarea id="desc_en" data-i18n-ph="phDesc" placeholder="Descripción breve"></textarea>
+      </div>
+
+      <div class="modal-error" id="cardError"></div>
+      <div class="modal-actions">
+        <button class="btn-board danger modal-del" id="cardDelete" data-i18n="delete" style="display:none">Eliminar</button>
+        <button class="btn-board ghost" data-close data-i18n="cancel">Cancelar</button>
+        <button class="btn-board" id="cardSave" data-i18n="save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drag & drop + Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="tablero.js"></script>
+</body>
+</html>
