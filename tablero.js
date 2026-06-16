@@ -31,6 +31,23 @@ const CATEGORIES = [
   { key: 'legal',    es: 'Legal',       eu: 'Legala',       en: 'Legal' },
 ];
 
+// People a matter can be assigned to. Edit this list freely.
+const ASSIGNEES = [
+  'Sandra Rodríguez Salvador',
+  'Amaia Narbarte',
+  'Iratxe Meatza',
+  'Vanesa González Saldibar',
+  'Federica Santino',
+  'Denis Sánchez Argoitia',
+  'Ana Martiarena Iriarte',
+  'Josu Manterola Matellanes',
+  'Elena Iruin',
+  'Marta Cazorla Soult',
+  'Oihane Garrido',
+  'Natalia Gutierrez Pérez de Eulate',
+  'Saioa Menta',
+];
+
 const I18N = {
   es: {
     navHome: 'Inicio', navBoard: 'Tablero',
@@ -51,6 +68,12 @@ const I18N = {
     statusDemo: 'Modo demo · solo en este navegador',
     statusEditing: 'Edición activada',
     saveError: 'No se pudo guardar. Inténtalo de nuevo.',
+    assignee: 'Responsable', unassigned: 'Sin asignar',
+    chatSub: 'Notas internas · solo visibles para miembros',
+    yourName: 'Tu nombre', message: 'Mensaje', phMessage: 'Escribe una nota...',
+    close: 'Cerrar', send: 'Enviar',
+    noComments: 'Aún no hay notas internas.',
+    needNameText: 'Escribe tu nombre y el mensaje.',
   },
   eu: {
     navHome: 'Hasiera', navBoard: 'Taula',
@@ -71,6 +94,12 @@ const I18N = {
     statusDemo: 'Demo modua · nabigatzaile honetan soilik',
     statusEditing: 'Edizioa aktibatuta',
     saveError: 'Ezin izan da gorde. Saiatu berriro.',
+    assignee: 'Arduraduna', unassigned: 'Esleitu gabe',
+    chatSub: 'Barne oharrak · kideek soilik ikus ditzakete',
+    yourName: 'Zure izena', message: 'Mezua', phMessage: 'Idatzi ohar bat...',
+    close: 'Itxi', send: 'Bidali',
+    noComments: 'Oraindik ez dago barne oharrik.',
+    needNameText: 'Idatzi zure izena eta mezua.',
   },
   en: {
     navHome: 'Home', navBoard: 'Board',
@@ -91,6 +120,12 @@ const I18N = {
     statusDemo: 'Demo mode · this browser only',
     statusEditing: 'Editing enabled',
     saveError: 'Could not save. Please try again.',
+    assignee: 'Assignee', unassigned: 'Unassigned',
+    chatSub: 'Internal notes · visible to members only',
+    yourName: 'Your name', message: 'Message', phMessage: 'Write a note...',
+    close: 'Close', send: 'Send',
+    noComments: 'No internal notes yet.',
+    needNameText: 'Enter your name and message.',
   },
 };
 
@@ -106,6 +141,7 @@ let editingId = null;           // card being edited (null = new)
 
 const t = (k) => (I18N[lang] && I18N[lang][k]) || k;
 const esc = (s) => (s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const initials = (name) => (name || '').trim().split(/\s+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase();
 const $  = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
@@ -124,6 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireNav();
   wireLogin();
   wireCardModal();
+  wireChat();
   wireEditToggle();
 
   document.body.classList.toggle('editing', editing);
@@ -191,6 +228,7 @@ function subscribeRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'board_cards' }, async () => {
       await loadCards();
       render();
+      if ($('#chatModal').classList.contains('open')) renderChat();
     })
     .subscribe();
 }
@@ -233,17 +271,24 @@ function cardEl(c) {
   const cat = CATEGORIES.find(x => x.key === c.category) || CATEGORIES[0];
   const title = c[`title_${lang}`] || c.title_es || '';
   const desc  = c[`desc_${lang}`]  || c.desc_es  || '';
+  const ccount = (c.comments || []).length;
+  const assigneeChip = (editing && c.assignee)
+    ? `<div class="card-assignee"><span class="assignee-ava">${esc(initials(c.assignee))}</span>${esc(c.assignee)}</div>`
+    : '';
   el.innerHTML = `
     <span class="card-cat ${cat.key}"><span class="card-cat-dot"></span>${esc(cat[lang])}</span>
     <div class="card-title">${esc(title)}</div>
     ${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}
+    ${assigneeChip}
     <div class="card-foot">
       <span class="card-date">${c.date ? formatDate(c.date) : ''}</span>
       <span class="card-actions">
+        <button title="Chat" data-chat><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/></svg>${ccount ? `<span class="chat-count">${ccount}</span>` : ''}</button>
         <button title="Edit" data-edit><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
       </span>
     </div>`;
   $('[data-edit]', el).addEventListener('click', (e) => { e.stopPropagation(); openCardModal(c.id); });
+  $('[data-chat]', el).addEventListener('click', (e) => { e.stopPropagation(); openChat(c.id); });
   el.addEventListener('dblclick', () => { if (editing) openCardModal(c.id); });
   return el;
 }
@@ -299,7 +344,10 @@ function applyLang() {
   // Selects
   $('#fldCategory').innerHTML = CATEGORIES.map(c => `<option value="${c.key}">${esc(c[lang])}</option>`).join('');
   $('#fldStage').innerHTML = STAGES.map(s => `<option value="${s.key}">${esc(s[lang])}</option>`).join('');
+  $('#fldAssignee').innerHTML = `<option value="">${esc(t('unassigned'))}</option>` +
+    ASSIGNEES.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
 
+  if ($('#chatModal').classList.contains('open')) renderChat();
   updateEditToggle();
   updateStatus();
 }
@@ -397,7 +445,7 @@ function wireCardModal() {
     }
   });
   $$('[data-close]').forEach(b => b.addEventListener('click', () => {
-    closeModal('#loginModal'); closeModal('#cardModal');
+    $$('.modal-overlay').forEach(o => o.classList.remove('open'));
   }));
   $$('.modal-overlay').forEach(o => o.addEventListener('click', (e) => { if (e.target === o) closeModal('#' + o.id); }));
 }
@@ -410,6 +458,7 @@ function openCardModal(id, presetStage) {
   $('#cardError').textContent = '';
   $('#fldCategory').value = c ? (c.category || 'general') : 'general';
   $('#fldStage').value    = c ? c.stage : (presetStage || STAGES[0].key);
+  $('#fldAssignee').value = c ? (c.assignee || '') : '';
   $('#fldDate').value     = c && c.date ? c.date : '';
   ['es','eu','en'].forEach(l => {
     $(`#title_${l}`).value = c ? (c[`title_${l}`] || '') : '';
@@ -427,10 +476,12 @@ async function saveCardFromModal() {
     id: editingId || (DEMO ? 'd' + Date.now() : undefined),
     category: $('#fldCategory').value,
     stage: $('#fldStage').value,
+    assignee: $('#fldAssignee').value || null,
     date: $('#fldDate').value || null,
     position: base ? base.position : nextPosition($('#fldStage').value),
     title_es: titleEs, title_eu: $('#title_eu').value.trim(), title_en: $('#title_en').value.trim(),
     desc_es: $('#desc_es').value.trim(), desc_eu: $('#desc_eu').value.trim(), desc_en: $('#desc_en').value.trim(),
+    comments: base ? (base.comments || []) : [],
   };
   const ok = await persistCard(card, !editingId);
   if (!ok) { $('#cardError').textContent = t('saveError'); return; }
@@ -441,6 +492,82 @@ async function saveCardFromModal() {
 function nextPosition(stage) {
   const inStage = cards.filter(c => c.stage === stage);
   return inStage.length ? Math.max(...inStage.map(c => c.position ?? 0)) + 1 : 0;
+}
+
+/* ── Internal chat (members only) ──────────────────── */
+let chatCardId = null;
+
+function wireChat() {
+  $('#chatSend').addEventListener('click', sendComment);
+  $('#chatText').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendComment();
+  });
+}
+
+function openChat(id) {
+  chatCardId = id;
+  $('#chatName').value = localStorage.getItem('chatName') || '';
+  $('#chatText').value = '';
+  $('#chatError').textContent = '';
+  renderChat();
+  openModal('#chatModal');
+  setTimeout(() => $((localStorage.getItem('chatName') ? '#chatText' : '#chatName')).focus(), 50);
+}
+
+function renderChat() {
+  const c = cards.find(x => x.id === chatCardId);
+  if (!c) { closeModal('#chatModal'); return; }
+  $('#chatModalTitle').textContent = c[`title_${lang}`] || c.title_es || '';
+  const list = c.comments || [];
+  const thread = $('#chatThread');
+  thread.innerHTML = list.length
+    ? list.map(m => `
+        <div class="chat-msg">
+          <div class="chat-msg-head">
+            <span class="chat-msg-name">${esc(m.name)}</span>
+            <span class="chat-msg-date">${esc(formatDateTime(m.at))}</span>
+          </div>
+          <div class="chat-msg-text">${esc(m.text)}</div>
+        </div>`).join('')
+    : `<p class="chat-empty">${esc(t('noComments'))}</p>`;
+  thread.scrollTop = thread.scrollHeight;
+}
+
+async function sendComment() {
+  const name = $('#chatName').value.trim();
+  const text = $('#chatText').value.trim();
+  const err = $('#chatError');
+  if (!name || !text) { err.textContent = t('needNameText'); return; }
+  err.textContent = '';
+  localStorage.setItem('chatName', name);
+
+  const c = cards.find(x => x.id === chatCardId);
+  if (!c) return;
+  // Pull the freshest comments first so we don't clobber a concurrent note
+  let comments = (c.comments || []).slice();
+  if (!DEMO) {
+    const { data } = await supa.from('board_cards').select('comments').eq('id', chatCardId).single();
+    if (data && Array.isArray(data.comments)) comments = data.comments.slice();
+  }
+  comments.push({ name, text, at: new Date().toISOString() });
+
+  if (DEMO) {
+    c.comments = comments; saveDemo();
+  } else {
+    const { error } = await supa.from('board_cards').update({ comments }).eq('id', chatCardId);
+    if (error) { err.textContent = t('saveError'); return; }
+    c.comments = comments;
+  }
+  $('#chatText').value = '';
+  renderChat();
+  render(); // refresh the count badge on the card
+}
+
+function formatDateTime(iso) {
+  try {
+    const loc = lang === 'en' ? 'en-GB' : (lang === 'eu' ? 'eu' : 'es');
+    return new Date(iso).toLocaleString(loc, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  } catch { return iso; }
 }
 
 function openModal(sel)  { $(sel).classList.add('open'); }
@@ -454,7 +581,12 @@ function seedDemo() {
       desc_es:'Propuesta de actualización según IPC.', desc_eu:'KPIaren araberako eguneratze proposamena.', desc_en:'Proposed update in line with inflation.' },
     { id:'d2', stage:'negotiating', position:0, category:'schedule', date:'2026-04-20',
       title_es:'Flexibilidad horaria', title_eu:'Ordutegi malgutasuna', title_en:'Flexible working hours',
-      desc_es:'Entrada flexible y teletrabajo parcial.', desc_eu:'Sarrera malgua eta telelan partziala.', desc_en:'Flexible start and partial remote work.' },
+      desc_es:'Entrada flexible y teletrabajo parcial.', desc_eu:'Sarrera malgua eta telelan partziala.', desc_en:'Flexible start and partial remote work.',
+      assignee:'Denis Sánchez Argoitia',
+      comments:[
+        { name:'Denis', text:'RRHH pide una propuesta por escrito antes de la próxima reunión.', at:'2026-05-02T09:30:00.000Z' },
+        { name:'Iratxe', text:'Preparo un borrador para el viernes.', at:'2026-05-02T11:05:00.000Z' },
+      ] },
     { id:'d3', stage:'awaiting', position:0, category:'safety', date:'2026-03-30',
       title_es:'Evaluación de riesgos en laboratorio', title_eu:'Laborategiko arrisku ebaluazioa', title_en:'Lab risk assessment',
       desc_es:'A la espera del informe de prevención.', desc_eu:'Prebentzio txostenaren zain.', desc_en:'Awaiting the prevention report.' },

@@ -30,9 +30,11 @@ create table public.board_cards (
   stage      text not null default 'proposed',
   position   int  not null default 0,
   category   text not null default 'general',
+  assignee   text,
   date       date,
   title_es   text, title_eu text, title_en text,
   desc_es    text, desc_eu text, desc_en text,
+  comments   jsonb not null default '[]'::jsonb,
   created_at timestamptz default now()
 );
 
@@ -50,6 +52,14 @@ create policy "auth write" on public.board_cards
 
 Also enable live updates: **Database → Replication → `supabase_realtime`** →
 add the `board_cards` table (optional but makes the board refresh automatically).
+
+> **Already created the table earlier?** Don't re-run the `create table` above.
+> Just run this once to add the *assignee* + internal-chat columns:
+>
+> ```sql
+> alter table public.board_cards add column if not exists assignee text;
+> alter table public.board_cards add column if not exists comments jsonb not null default '[]'::jsonb;
+> ```
 
 ## 3. Create the single shared editor account
 
@@ -95,6 +105,7 @@ disappears — you're live.
 
 ## Customising
 
+- **People (assignee list):** edit the `ASSIGNEES` array in `tablero.js`.
 - **Stages (columns):** edit the `STAGES` array in `tablero.js`.
 - **Categories / colours:** edit the `CATEGORIES` array in `tablero.js` and the
   matching `--cat-*` colours in `styles.css`.

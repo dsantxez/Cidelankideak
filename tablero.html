@@ -97,8 +97,16 @@
         </div>
       </div>
 
-      <label data-i18n="stage">Etapa</label>
-      <select id="fldStage"></select>
+      <div class="modal-row">
+        <div>
+          <label data-i18n="stage">Etapa</label>
+          <select id="fldStage"></select>
+        </div>
+        <div>
+          <label data-i18n="assignee">Responsable</label>
+          <select id="fldAssignee"></select>
+        </div>
+      </div>
 
       <label data-i18n="content">Contenido por idioma</label>
       <div class="modal-lang-tabs">
@@ -124,6 +132,30 @@
         <button class="btn-board danger modal-del" id="cardDelete" data-i18n="delete" style="display:none">Eliminar</button>
         <button class="btn-board ghost" data-close data-i18n="cancel">Cancelar</button>
         <button class="btn-board" id="cardSave" data-i18n="save">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERNAL CHAT MODAL (members only) -->
+  <div class="modal-overlay" id="chatModal">
+    <div class="modal">
+      <h3 id="chatModalTitle">—</h3>
+      <p class="chat-sub" data-i18n="chatSub">Notas internas · solo visibles para miembros</p>
+      <div class="chat-thread" id="chatThread"></div>
+      <div class="chat-compose">
+        <div class="modal-row">
+          <div>
+            <label data-i18n="yourName">Tu nombre</label>
+            <input type="text" id="chatName" autocomplete="name" />
+          </div>
+        </div>
+        <label data-i18n="message">Mensaje</label>
+        <textarea id="chatText" data-i18n-ph="phMessage" placeholder="Escribe una nota..."></textarea>
+        <div class="modal-error" id="chatError"></div>
+        <div class="modal-actions">
+          <button class="btn-board ghost" data-close data-i18n="close">Cerrar</button>
+          <button class="btn-board" id="chatSend" data-i18n="send">Enviar</button>
+        </div>
       </div>
     </div>
   </div>
