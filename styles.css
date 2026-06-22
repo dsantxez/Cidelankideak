@@ -633,11 +633,11 @@ footer {
    TABLERO / NEGOTIATION BOARD
    ═══════════════════════════════════════════════════ */
 :root {
-  --cat-general:  #0066B3;
-  --cat-salary:   #00C18A;
-  --cat-safety:   #F07800;
-  --cat-schedule: #7A5AF0;
-  --cat-legal:    #D0021B;
+  --cat-general:     #0066B3;  /* blue */
+  --cat-equality:    #8E24AA;  /* morado feminista — women's movement (igualdad) */
+  --cat-mobility:    #00C18A;  /* green */
+  --cat-prevention:  #F07800;  /* orange — work safety (prevención) */
+  --cat-improvement: #D0021B;  /* red */
 }
 
 /* Page chrome — board pages have no full-height banner, so push content below the fixed nav */
@@ -673,11 +673,11 @@ footer {
 }
 .cat-legend { display: flex; gap: 1.2rem; flex-wrap: wrap; }
 .cat-legend .dept-badge { cursor: default; }
-.cat-legend .dept-badge-dot.general  { background: var(--cat-general); }
-.cat-legend .dept-badge-dot.salary   { background: var(--cat-salary); }
-.cat-legend .dept-badge-dot.safety   { background: var(--cat-safety); }
-.cat-legend .dept-badge-dot.schedule { background: var(--cat-schedule); }
-.cat-legend .dept-badge-dot.legal    { background: var(--cat-legal); }
+.cat-legend .dept-badge-dot.general     { background: var(--cat-general); }
+.cat-legend .dept-badge-dot.equality    { background: var(--cat-equality); }
+.cat-legend .dept-badge-dot.mobility    { background: var(--cat-mobility); }
+.cat-legend .dept-badge-dot.prevention  { background: var(--cat-prevention); }
+.cat-legend .dept-badge-dot.improvement { background: var(--cat-improvement); }
 
 .board-access { display: flex; align-items: center; gap: 0.75rem; }
 .board-status {
@@ -784,11 +784,11 @@ footer {
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   transition: box-shadow 0.2s, transform 0.15s;
 }
-.card.cat-general  { border-left-color: var(--cat-general); }
-.card.cat-salary   { border-left-color: var(--cat-salary); }
-.card.cat-safety   { border-left-color: var(--cat-safety); }
-.card.cat-schedule { border-left-color: var(--cat-schedule); }
-.card.cat-legal    { border-left-color: var(--cat-legal); }
+.card.cat-general     { border-left-color: var(--cat-general); }
+.card.cat-equality    { border-left-color: var(--cat-equality); }
+.card.cat-mobility    { border-left-color: var(--cat-mobility); }
+.card.cat-prevention  { border-left-color: var(--cat-prevention); }
+.card.cat-improvement { border-left-color: var(--cat-improvement); }
 
 .card-cat {
   font-size: 0.6rem;
@@ -802,11 +802,11 @@ footer {
   margin-bottom: 0.5rem;
 }
 .card-cat-dot { width: 8px; height: 8px; border-radius: 50%; }
-.card-cat.general  .card-cat-dot { background: var(--cat-general); }
-.card-cat.salary   .card-cat-dot { background: var(--cat-salary); }
-.card-cat.safety   .card-cat-dot { background: var(--cat-safety); }
-.card-cat.schedule .card-cat-dot { background: var(--cat-schedule); }
-.card-cat.legal    .card-cat-dot { background: var(--cat-legal); }
+.card-cat.general     .card-cat-dot { background: var(--cat-general); }
+.card-cat.equality    .card-cat-dot { background: var(--cat-equality); }
+.card-cat.mobility    .card-cat-dot { background: var(--cat-mobility); }
+.card-cat.prevention  .card-cat-dot { background: var(--cat-prevention); }
+.card-cat.improvement .card-cat-dot { background: var(--cat-improvement); }
 
 .card-title {
   font-size: 0.92rem;

@@ -16,19 +16,18 @@ const DEMO_PASSWORD     = 'cidetec';                // only used in DEMO mode
 /* ─────────────────────────────────────────────────── */
 
 const STAGES = [
-  { key: 'proposed',    es: 'Planteado',               eu: 'Planteatua',        en: 'Raised' },
-  { key: 'negotiating', es: 'En negociación',          eu: 'Negoziatzen',       en: 'Negotiating' },
-  { key: 'awaiting',    es: 'Pendiente de respuesta',  eu: 'Erantzunaren zain', en: 'Awaiting response' },
-  { key: 'agreed',      es: 'Acordado',                eu: 'Adostua',           en: 'Agreed' },
-  { key: 'closed',      es: 'Cerrado',                 eu: 'Itxita',            en: 'Closed' },
+  { key: 'suggestions', es: 'Sugerencias recibidas',   eu: 'Jasotako iradokizunak', en: 'Suggestions received' },
+  { key: 'proposed',    es: 'Planteado',               eu: 'Planteatua',            en: 'Raised' },
+  { key: 'negotiating', es: 'En negociación',          eu: 'Negoziatzen',           en: 'Negotiating' },
+  { key: 'agreed',      es: 'Acordado',                eu: 'Adostua',               en: 'Agreed' },
 ];
 
 const CATEGORIES = [
-  { key: 'general',  es: 'General',     eu: 'Orokorra',     en: 'General' },
-  { key: 'salary',   es: 'Salarios',    eu: 'Soldatak',     en: 'Wages' },
-  { key: 'safety',   es: 'Seguridad',   eu: 'Segurtasuna',  en: 'Safety' },
-  { key: 'schedule', es: 'Horarios',    eu: 'Ordutegiak',   en: 'Schedules' },
-  { key: 'legal',    es: 'Legal',       eu: 'Legala',       en: 'Legal' },
+  { key: 'general',     es: 'General',     eu: 'Orokorra',       en: 'General' },
+  { key: 'equality',    es: 'Igualdad',    eu: 'Berdintasuna',   en: 'Equality' },
+  { key: 'mobility',    es: 'Movilidad',   eu: 'Mugikortasuna',  en: 'Mobility' },
+  { key: 'prevention',  es: 'Prevención',  eu: 'Prebentzioa',    en: 'Prevention' },
+  { key: 'improvement', es: 'Mejora',      eu: 'Hobekuntza',     en: 'Improvement' },
 ];
 
 // People a matter can be assigned to. Edit this list freely.
@@ -612,10 +611,13 @@ function closeModal(sel) { $(sel).classList.remove('open'); }
 /* ── Demo seed ─────────────────────────────────────── */
 function seedDemo() {
   return [
-    { id:'d1', stage:'proposed', position:0, category:'salary', date:'2026-05-12',
+    { id:'d0', stage:'suggestions', position:0, category:'equality', date:'2026-05-20',
+      title_es:'Plan de igualdad', title_eu:'Berdintasun plana', title_en:'Equality plan',
+      desc_es:'Sugerencia recibida de la plantilla.', desc_eu:'Plantillatik jasotako iradokizuna.', desc_en:'Suggestion received from staff.' },
+    { id:'d1', stage:'proposed', position:0, category:'improvement', date:'2026-05-12',
       title_es:'Revisión salarial 2026', title_eu:'2026ko soldata berrikuspena', title_en:'2026 pay review',
       desc_es:'Propuesta de actualización según IPC.', desc_eu:'KPIaren araberako eguneratze proposamena.', desc_en:'Proposed update in line with inflation.' },
-    { id:'d2', stage:'negotiating', position:0, category:'schedule', date:'2026-04-20',
+    { id:'d2', stage:'negotiating', position:0, category:'mobility', date:'2026-04-20',
       title_es:'Flexibilidad horaria', title_eu:'Ordutegi malgutasuna', title_en:'Flexible working hours',
       desc_es:'Entrada flexible y teletrabajo parcial.', desc_eu:'Sarrera malgua eta telelan partziala.', desc_en:'Flexible start and partial remote work.',
       assignee:'Denis Sánchez Argoitia',
@@ -623,9 +625,9 @@ function seedDemo() {
         { name:'Denis', text:'RRHH pide una propuesta por escrito antes de la próxima reunión.', at:'2026-05-02T09:30:00.000Z' },
         { name:'Iratxe', text:'Preparo un borrador para el viernes.', at:'2026-05-02T11:05:00.000Z' },
       ] },
-    { id:'d3', stage:'awaiting', position:0, category:'safety', date:'2026-03-30',
+    { id:'d3', stage:'negotiating', position:1, category:'prevention', date:'2026-03-30',
       title_es:'Evaluación de riesgos en laboratorio', title_eu:'Laborategiko arrisku ebaluazioa', title_en:'Lab risk assessment',
-      desc_es:'A la espera del informe de prevención.', desc_eu:'Prebentzio txostenaren zain.', desc_en:'Awaiting the prevention report.' },
+      desc_es:'Pendiente del informe de prevención.', desc_eu:'Prebentzio txostenaren zain.', desc_en:'Awaiting the prevention report.' },
     { id:'d4', stage:'agreed', position:0, category:'general', date:'2026-02-15',
       title_es:'Calendario laboral 2026', title_eu:'2026ko lan egutegia', title_en:'2026 work calendar',
       desc_es:'Acordado con la dirección.', desc_eu:'Zuzendaritzarekin adostua.', desc_en:'Agreed with management.' },
