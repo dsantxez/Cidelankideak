@@ -1092,6 +1092,52 @@ footer {
 }
 .modal-check input { width: auto !important; accent-color: var(--blue); width: 18px !important; height: 18px; cursor: pointer; }
 
+/* ── Voting (suggestions column) ─────────────────── */
+.board-admin-only { display: none; }
+.board-page.editing .board-admin-only { display: inline-flex; }
+.btn-board.voting-on { background: var(--cat-improvement); border-color: var(--cat-improvement); color: #fff; }
+
+.card-vote { margin-top: 0.75rem; }
+.vote-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.vote-control { display: flex; gap: 0.3rem; }
+.vote-seg {
+  flex: 1;
+  padding: 0.38rem 0.2rem;
+  background: var(--bg2);
+  border: 1px solid var(--line-dark);
+  font-family: 'Barlow', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.vote-seg:hover { border-color: var(--blue); color: var(--blue); }
+.vote-seg.sel { color: #fff; border-color: transparent; }
+.vote-seg.w1.sel { background: #00C18A; }   /* low = green */
+.vote-seg.w2.sel { background: #F5A623; }   /* medium = amber */
+.vote-seg.w3.sel { background: #D0021B; }   /* high = red */
+
+.vote-result { display: flex; align-items: baseline; gap: 0.5rem; }
+.vote-score {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--blue);
+  line-height: 1;
+}
+.vote-count { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; }
+.vote-none { font-size: 0.72rem; color: var(--muted); }
+
 @media (max-width: 768px) {
   .board-toolbar { flex-direction: column; align-items: flex-start; }
   .modal-row { flex-direction: column; gap: 0; }

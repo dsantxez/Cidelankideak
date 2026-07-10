@@ -75,6 +75,10 @@ const I18N = {
     needNameText: 'Escribe tu nombre y el mensaje.',
     visibleLabel: 'Visible para el público',
     hiddenBadge: 'Oculto', showCard: 'Hacer visible', hideCard: 'Ocultar al público',
+    importance: 'Importancia',
+    impLow: 'Baja', impMed: 'Media', impHigh: 'Alta',
+    votes: 'votos', voteOne: 'voto', noVotes: 'Sin votos',
+    openVoting: 'Abrir votación', closeVoting: 'Cerrar votación',
   },
   eu: {
     navHome: 'Hasiera', navBoard: 'Taula',
@@ -103,6 +107,10 @@ const I18N = {
     needNameText: 'Idatzi zure izena eta mezua.',
     visibleLabel: 'Publikoarentzat ikusgai',
     hiddenBadge: 'Ezkutatua', showCard: 'Ikusgai egin', hideCard: 'Publikoari ezkutatu',
+    importance: 'Garrantzia',
+    impLow: 'Baxua', impMed: 'Ertaina', impHigh: 'Altua',
+    votes: 'boto', voteOne: 'boto', noVotes: 'Botorik ez',
+    openVoting: 'Bozketa ireki', closeVoting: 'Bozketa itxi',
   },
   en: {
     navHome: 'Home', navBoard: 'Board',
@@ -131,6 +139,10 @@ const I18N = {
     needNameText: 'Enter your name and message.',
     visibleLabel: 'Visible to the public',
     hiddenBadge: 'Hidden', showCard: 'Make visible', hideCard: 'Hide from public',
+    importance: 'Importance',
+    impLow: 'Low', impMed: 'Medium', impHigh: 'High',
+    votes: 'votes', voteOne: 'vote', noVotes: 'No votes',
+    openVoting: 'Open voting', closeVoting: 'Close voting',
   },
 };
 
@@ -141,8 +153,15 @@ let lang     = 'es';
 let editing  = false;
 let cards    = [];
 let supa     = null;            // Supabase client (null in demo mode)
-const DEMO   = SUPABASE_URL.startsWith('YOUR_');
+const DEMO   = SUPABASE_URL.startsWith('YOUR_') || new URLSearchParams(location.search).get('demo') === '1';
 let editingId = null;           // card being edited (null = new)
+
+// Voting
+let votes      = [];            // vote rows visible to the caller
+let votingOpen = false;         // is the voting campaign open?
+let voterId    = null;          // this browser's voter id (set lazily)
+let scoreMap   = {};            // cardId -> { n, sum, avg, score }  (rebuilt each render)
+const VOTE_C   = 3;             // Bayesian prior strength
 
 const t = (k) => (I18N[lang] && I18N[lang][k]) || k;
 const esc = (s) => (s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
@@ -158,8 +177,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!DEMO) {
     supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const { data: { session } } = await supa.auth.getSession();
-    editing = !!session;
+    editing = !!session && session.user?.is_anonymous === false;  // anonymous voter ≠ admin
+    voterId = session?.user?.id || null;
   }
+  if (DEMO) voterId = localStorage.getItem('demoVoterId') || null;  // restore this browser's voter
 
   buildStaticSelects();
   wireNav();
@@ -167,10 +188,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireCardModal();
   wireChat();
   wireEditToggle();
+  wireVoting();
 
   document.body.classList.toggle('editing', editing);
 
   await loadCards();
+  await loadSettings();
+  await loadVotes();
   applyLang();
   render();
 
@@ -235,6 +259,16 @@ function subscribeRealtime() {
       render();
       if ($('#chatModal').classList.contains('open')) renderChat();
     })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'board_votes' }, async () => {
+      await loadVotes();
+      render();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'board_settings' }, async () => {
+      await loadSettings();
+      await loadVotes();          // closing reveals all votes; opening restricts to own
+      updateVotingToggle();
+      render();
+    })
     .subscribe();
 }
 
@@ -242,6 +276,7 @@ function subscribeRealtime() {
 function render() {
   const board = $('#board');
   board.innerHTML = '';
+  scoreMap = computeScores();
 
   STAGES.forEach(stage => {
     const colCards = cards
@@ -288,12 +323,31 @@ function cardEl(c) {
   const eyeSvg = hidden
     ? `<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"/></svg>`
     : `<svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+  // Voting block — only on visible suggestion cards
+  const votable = c.stage === 'suggestions' && c.is_public !== false;
+  let voteBlock = '';
+  if (votable) {
+    const mine = myVote(c.id);
+    const s = scoreMap[c.id];
+    const showResults = !votingOpen || editing;   // voters see results only once closed; admin always
+    const seg = (w, key) => `<button class="vote-seg w${w}${mine && mine.weight === w ? ' sel' : ''}" data-vote="${w}">${esc(t(key))}</button>`;
+    const controls = votingOpen
+      ? `<div class="vote-label">${esc(t('importance'))}</div><div class="vote-control" role="group">${seg(1, 'impLow')}${seg(2, 'impMed')}${seg(3, 'impHigh')}</div>`
+      : '';
+    const results = (showResults && s)
+      ? `<div class="vote-result"><span class="vote-score">${s.avg.toFixed(1)}</span><span class="vote-count">${s.n} ${esc(s.n === 1 ? t('voteOne') : t('votes'))}</span></div>`
+      : ((editing && !s) ? `<div class="vote-result vote-none">${esc(t('noVotes'))}</div>` : '');
+    voteBlock = (controls || results) ? `<div class="card-vote">${controls}${results}</div>` : '';
+  }
+
   el.innerHTML = `
     ${hiddenBadge}
     <span class="card-cat ${cat.key}"><span class="card-cat-dot"></span>${esc(cat[lang])}</span>
     <div class="card-title">${esc(title)}</div>
     ${desc ? `<div class="card-desc">${esc(desc)}</div>` : ''}
     ${assigneeChip}
+    ${voteBlock}
     <div class="card-foot">
       <span class="card-date">${c.date ? formatDate(c.date) : ''}</span>
       <span class="card-actions">
@@ -305,6 +359,12 @@ function cardEl(c) {
   $('[data-edit]', el).addEventListener('click', (e) => { e.stopPropagation(); openCardModal(c.id); });
   $('[data-chat]', el).addEventListener('click', (e) => { e.stopPropagation(); openChat(c.id); });
   $('[data-vis]', el).addEventListener('click', (e) => { e.stopPropagation(); toggleVisibility(c.id); });
+  if (votable && votingOpen) $$('[data-vote]', el).forEach(b => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const w = +b.dataset.vote;
+    const mine = myVote(c.id);
+    if (mine && mine.weight === w) clearVote(c.id); else castVote(c.id, w);
+  }));
   el.addEventListener('dblclick', () => { if (editing) openCardModal(c.id); });
   return el;
 }
@@ -319,13 +379,17 @@ function formatDate(d) {
 let sortables = [];
 function enableDnD() {
   sortables.forEach(s => s.destroy());
-  sortables = $$('.board-list').map(list => Sortable.create(list, {
-    group: 'board',
-    animation: 150,
-    ghostClass: 'sortable-ghost',
-    dragClass: 'sortable-drag',
-    onEnd: onDragEnd,
-  }));
+  sortables = $$('.board-list').map(list => {
+    // the suggestions column is ordered by votes once a campaign is running
+    if (list.dataset.stage === 'suggestions' && (votingOpen || votes.length)) return null;
+    return Sortable.create(list, {
+      group: 'board',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      dragClass: 'sortable-drag',
+      onEnd: onDragEnd,
+    });
+  }).filter(Boolean);
 }
 
 async function onDragEnd(evt) {
@@ -365,6 +429,7 @@ function applyLang() {
 
   if ($('#chatModal').classList.contains('open')) renderChat();
   updateEditToggle();
+  updateVotingToggle();
   updateStatus();
 }
 
@@ -529,6 +594,130 @@ function nextPosition(stage) {
   return inStage.length ? Math.max(...inStage.map(c => c.position ?? 0)) + 1 : 0;
 }
 
+/* ── Voting (importance of suggestions) ────────────── */
+async function loadSettings() {
+  if (DEMO) { votingOpen = localStorage.getItem('votingOpen') === '1'; return; }
+  const { data, error } = await supa.from('board_settings').select('voting_open').eq('id', 1).maybeSingle();
+  votingOpen = (!error && data) ? !!data.voting_open : false;   // default closed / table absent
+}
+
+async function loadVotes() {
+  if (DEMO) { votes = JSON.parse(localStorage.getItem('boardVotes') || '[]'); return; }
+  const { data, error } = await supa.from('board_votes').select('card_id, voter_id, weight');
+  votes = (!error && data) ? data : [];
+}
+
+function saveVotesDemo() { localStorage.setItem('boardVotes', JSON.stringify(votes)); }
+
+function myVote(cardId) {
+  return voterId ? (votes.find(v => v.card_id === cardId && v.voter_id === voterId) || null) : null;
+}
+
+async function ensureVoter() {
+  if (voterId) return voterId;
+  if (DEMO) {
+    voterId = localStorage.getItem('demoVoterId') || ('v' + Math.random().toString(36).slice(2));
+    localStorage.setItem('demoVoterId', voterId);
+    return voterId;
+  }
+  const { data: { session } } = await supa.auth.getSession();
+  if (session) { voterId = session.user.id; return voterId; }
+  const { data, error } = await supa.auth.signInAnonymously();  // silent, no PII
+  if (error || !data?.user) return null;
+  voterId = data.user.id;
+  return voterId;
+}
+
+async function castVote(cardId, weight) {
+  if (!votingOpen) return;
+  const id = await ensureVoter();
+  if (!id) return;
+  const existing = votes.find(v => v.card_id === cardId && v.voter_id === id);
+  if (existing) existing.weight = weight;
+  else votes.push({ card_id: cardId, voter_id: id, weight });
+  if (DEMO) { saveVotesDemo(); }
+  else {
+    const { error } = await supa.from('board_votes').upsert({ card_id: cardId, voter_id: id, weight });
+    if (error) { await loadVotes(); render(); return; }
+  }
+  renderCardVote(cardId);
+}
+
+async function clearVote(cardId) {
+  if (!votingOpen) return;
+  const id = voterId || await ensureVoter();
+  if (!id) return;
+  votes = votes.filter(v => !(v.card_id === cardId && v.voter_id === id));
+  if (DEMO) { saveVotesDemo(); }
+  else { await supa.from('board_votes').delete().eq('card_id', cardId).eq('voter_id', id); }
+  renderCardVote(cardId);
+}
+
+// Rebuild just one card in place (keeps the voter's scroll position on click)
+function renderCardVote(cardId) {
+  const el = document.querySelector(`.card[data-id="${cardId}"]`);
+  const c = cards.find(x => x.id === cardId);
+  if (!el || !c) { render(); return; }
+  scoreMap = computeScores();
+  el.replaceWith(cardEl(c));
+}
+
+// Per-card tallies + Bayesian score. score = (C*m + Σw) / (C + n), m = global mean weight.
+function computeScores() {
+  const byCard = {};
+  let total = 0, count = 0;
+  votes.forEach(v => {
+    const s = byCard[v.card_id] || (byCard[v.card_id] = { n: 0, sum: 0 });
+    s.n++; s.sum += v.weight;
+    total += v.weight; count++;
+  });
+  const m = count ? total / count : 2;
+  Object.values(byCard).forEach(s => {
+    s.avg = s.sum / s.n;
+    s.score = (VOTE_C * m + s.sum) / (VOTE_C + s.n);
+  });
+  return byCard;
+}
+
+function wireVoting() {
+  const btn = $('#votingToggle');
+  if (btn) btn.addEventListener('click', toggleVoting);
+}
+
+function updateVotingToggle() {
+  const btn = $('#votingToggle');
+  if (!btn) return;
+  btn.querySelector('span').textContent = votingOpen ? t('closeVoting') : t('openVoting');
+  btn.classList.toggle('voting-on', votingOpen);
+}
+
+async function toggleVoting() {
+  const next = !votingOpen;
+
+  if (!next) {   // closing → rank the suggestions column by score and freeze positions
+    const scores = computeScores();
+    const ranked = cards.filter(c => c.stage === 'suggestions').sort((a, b) => {
+      const sa = scores[a.id] || { n: 0, score: -1 };
+      const sb = scores[b.id] || { n: 0, score: -1 };
+      const va = sa.n > 0 ? 1 : 0, vb = sb.n > 0 ? 1 : 0;
+      if (va !== vb) return vb - va;                       // voted cards first
+      if (va === 1) return (sb.score - sa.score) || (sb.n - sa.n);
+      return (a.position ?? 0) - (b.position ?? 0);         // both unvoted: keep order
+    });
+    await persistPositions(ranked.map((c, i) => ({ id: c.id, stage: 'suggestions', position: i })));
+  }
+
+  votingOpen = next;
+  if (DEMO) { localStorage.setItem('votingOpen', next ? '1' : '0'); }
+  else {
+    const { error } = await supa.from('board_settings').update({ voting_open: next }).eq('id', 1);
+    if (error) { votingOpen = !next; alert(t('saveError')); return; }
+    await loadVotes();   // closing reveals all votes; opening restricts to own
+  }
+  updateVotingToggle();
+  render();
+}
+
 /* ── Internal chat (members only) ──────────────────── */
 let chatCardId = null;
 
@@ -611,9 +800,15 @@ function closeModal(sel) { $(sel).classList.remove('open'); }
 /* ── Demo seed ─────────────────────────────────────── */
 function seedDemo() {
   return [
-    { id:'d0', stage:'suggestions', position:0, category:'equality', date:'2026-05-20',
+    { id:'d0', stage:'suggestions', position:0, category:'equality', is_public:true, date:'2026-05-20',
       title_es:'Plan de igualdad', title_eu:'Berdintasun plana', title_en:'Equality plan',
       desc_es:'Sugerencia recibida de la plantilla.', desc_eu:'Plantillatik jasotako iradokizuna.', desc_en:'Suggestion received from staff.' },
+    { id:'d0b', stage:'suggestions', position:1, category:'improvement', is_public:true, date:'2026-05-18',
+      title_es:'Antigüedad: trienios', title_eu:'Antzinatasuna: hirurtekoak', title_en:'Seniority: three-year increments',
+      desc_es:'Complemento de antigüedad para revalorizar contratos.', desc_eu:'Antzinatasun-osagarria kontratuak balioan jartzeko.', desc_en:'Seniority supplement to revalue contracts.' },
+    { id:'d0c', stage:'suggestions', position:2, category:'prevention', is_public:true, date:'2026-05-16',
+      title_es:'Confort térmico en verano', title_eu:'Udako bero-konforta', title_en:'Thermal comfort in summer',
+      desc_es:'Climatización de la nave ante las olas de calor.', desc_eu:'Nabearen klimatizazioa bero-boladei aurre egiteko.', desc_en:'Air-conditioning the hall for heatwaves.' },
     { id:'d1', stage:'proposed', position:0, category:'improvement', date:'2026-05-12',
       title_es:'Revisión salarial 2026', title_eu:'2026ko soldata berrikuspena', title_en:'2026 pay review',
       desc_es:'Propuesta de actualización según IPC.', desc_eu:'KPIaren araberako eguneratze proposamena.', desc_en:'Proposed update in line with inflation.' },

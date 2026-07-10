@@ -127,6 +127,33 @@ disappears — you're live.
 4. **Edit/Delete** with the pencil icon on a card (or double-click it).
 5. Click **Salir** when done. Visitors always see the latest board, read-only.
 
+## Votación anónima de importancia (columna "Sugerencias recibidas")
+
+La plantilla puede puntuar la importancia de cada sugerencia **visible** como
+Baja / Media / Alta. Cada persona vota una vez (identidad anónima), puede cambiar su
+voto, y los resultados quedan ocultos hasta que cierras la votación. Al cerrarla, la
+columna se ordena de arriba a abajo con una media ponderada (Bayesiana) que combina la
+importancia con cuánta gente ha votado.
+
+**Puesta en marcha (una sola vez):**
+1. Supabase → **Authentication → Providers → Anonymous** = ON.
+2. Supabase → **SQL Editor** → pega y ejecuta `ADD-VOTING.sql`.
+   - Crea `board_votes` y `board_settings`, y **blinda `board_cards`** para que los
+     votantes anónimos no puedan editar tarjetas (solo leen las visibles). Importante.
+
+**Ciclo de una campaña:**
+1. Entra como admin, revisa las sugerencias ocultas y **publica** (👁) las que quieras
+   someter a votación. Solo las visibles son votables.
+2. Pulsa **Abrir votación**. La plantilla ya puede puntuar (sin ver resultados).
+3. Cuando quieras, pulsa **Cerrar votación**: la columna se reordena por prioridad y los
+   resultados se hacen visibles para todos.
+
+> **Anonimato y límites:** no se pide nombre ni correo; el voto se liga a una identidad
+> anónima por navegador/dispositivo. En la práctica es "un voto por dispositivo": alguien
+> podría volver a votar desde otro dispositivo o borrando los datos del navegador. Además,
+> cualquiera con el enlace del sitio puede votar (no está restringido a la plantilla). Es
+> el precio del anonimato; si necesitas voto por persona, habría que usar códigos.
+
 ## Customising
 
 - **People (assignee list):** edit the `ASSIGNEES` array in `tablero.js`.
