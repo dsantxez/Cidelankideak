@@ -19,7 +19,7 @@ const STAGES = [
   { key: 'suggestions', es: 'Sugerencias recibidas',   eu: 'Jasotako iradokizunak', en: 'Suggestions received' },
   { key: 'proposed',    es: 'Planteado',               eu: 'Planteatua',            en: 'Raised' },
   { key: 'negotiating', es: 'En negociación',          eu: 'Negoziatzen',           en: 'Negotiating' },
-  { key: 'agreed',      es: 'Acordado',                eu: 'Adostua',               en: 'Agreed' },
+  { key: 'agreed',      es: 'Cerrado',                 eu: 'Itxita',                en: 'Closed' },
 ];
 
 const CATEGORIES = [
