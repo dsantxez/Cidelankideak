@@ -336,7 +336,7 @@ function cardEl(c) {
       ? `<div class="vote-label">${esc(t('importance'))}</div><div class="vote-control" role="group">${seg(1, 'impLow')}${seg(2, 'impMed')}${seg(3, 'impHigh')}</div>`
       : '';
     const results = (showResults && s)
-      ? `<div class="vote-result"><span class="vote-score">${s.avg.toFixed(1)}</span><span class="vote-count">${s.n} ${esc(s.n === 1 ? t('voteOne') : t('votes'))}</span></div>`
+      ? `<div class="vote-result"><span class="vote-score">${s.avg.toFixed(1)}</span>${editing ? `<span class="vote-count">${s.n} ${esc(s.n === 1 ? t('voteOne') : t('votes'))}</span>` : ''}</div>`
       : ((editing && !s) ? `<div class="vote-result vote-none">${esc(t('noVotes'))}</div>` : '');
     voteBlock = (controls || results) ? `<div class="card-vote">${controls}${results}</div>` : '';
   }
