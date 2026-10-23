@@ -616,8 +616,110 @@ footer {
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
+/* ── NEWS ─────────────────────────────────────────── */
+.section-news {
+  padding: 6rem 2rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--line);
+}
+.section-news .inner { max-width: 960px; margin: 0 auto; }
+.news-header { text-align: center; margin-bottom: 3.5rem; }
+.news-header .description-title { margin-bottom: 0; }
+
+.news-card {
+  background: #fff;
+  border: 1px solid var(--line-dark);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.07);
+}
+.news-figure { margin: 0; position: relative; background: #8ccdf0; }
+.news-figure img { display: block; width: 100%; height: auto; }
+.news-body {
+  padding: 2.4rem 2.6rem 2.6rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  column-gap: 2.6rem;
+}
+.news-body > * { grid-column: 1; }
+.news-meta {
+  display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+  font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  font-weight: 500; color: var(--blue);
+  margin-bottom: 1.1rem;
+}
+.news-chip {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--blue);
+  letter-spacing: 0.16em;
+}
+.news-meta time { color: var(--text); font-weight: 600; }
+.news-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 500;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+}
+.news-title .arrow-dots { display: inline-flex; gap: 0.3rem; margin-left: 0.6rem; vertical-align: middle; }
+.news-title .arrow-dots i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.news-title .arrow-dots i:nth-child(1) { background: var(--blue); }
+.news-title .arrow-dots i:nth-child(2) { background: var(--energia); }
+.news-title .arrow-dots i:nth-child(3) { background: var(--ids); }
+.news-text { font-size: 0.97rem; color: var(--muted); line-height: 1.85; margin-bottom: 1rem; }
+.news-text strong { color: var(--text); font-weight: 500; }
+
+.news-unions {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: start;
+  padding-left: 2.2rem;
+  border-left: 1px solid var(--line);
+}
+.news-unions-label {
+  font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.9rem; display: block;
+}
+.news-unions-row { display: flex; flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+
+.news-body > .news-posters {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.6rem;
+  margin-top: 1.6rem;
+}
+.news-poster {
+  display: block;
+  border: 1px solid var(--line-dark);
+  box-shadow: 0 6px 22px rgba(0,0,0,0.10);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.news-poster:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.16); }
+.news-poster img { display: block; width: 100%; height: auto; }
+.news-unions-row a { display: inline-flex; align-items: center; opacity: 0.9; transition: opacity 0.2s, transform 0.2s; }
+.news-unions-row a:hover { opacity: 1; transform: translateY(-1px); }
+.news-unions-row img { height: 34px; width: auto; display: block; }
+
 /* ── RESPONSIVE ───────────────────────────────────── */
+@media (max-width: 1100px) {
+  nav, nav.scrolled { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .nav-center { gap: 1.2rem; }
+  .nav-center a { letter-spacing: 0.08em; }
+}
+@media (max-width: 900px) {
+  .nav-center { display: none; }
+  .news-body { grid-template-columns: 1fr; padding: 1.8rem 1.4rem 2rem; }
+  .news-unions { grid-column: 1; grid-row: auto; margin-top: 0.6rem; padding: 1.3rem 0 0; border-left: none; border-top: 1px solid var(--line); }
+  .news-unions-row { flex-direction: row; align-items: center; gap: 1.6rem; flex-wrap: wrap; }
+}
+@media (max-width: 600px) {
+  .news-body > .news-posters { grid-template-columns: 1fr; }
+}
 @media (max-width: 768px) {
+  .section-news { padding: 4rem 1.2rem; }
   nav { padding: 1rem 1.5rem; }
   .nav-center { display: none; }
   .banner-content { left: 5%; }
