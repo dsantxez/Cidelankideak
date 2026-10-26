@@ -631,8 +631,6 @@ footer {
   border: 1px solid var(--line-dark);
   box-shadow: 0 10px 40px rgba(0,0,0,0.07);
 }
-.news-figure { margin: 0; position: relative; background: #8ccdf0; }
-.news-figure img { display: block; width: 100%; height: auto; }
 .news-body {
   padding: 2.4rem 2.6rem 2.6rem;
   display: grid;
